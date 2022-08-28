@@ -4,8 +4,10 @@ import 'package:pac/screens/game.dart';
 import 'controllers/villainGereneratorController.dart';
 
 double tileSize = 16;
-int moedas = 0;
+int coins = 0;
+int? enemy;
 double lifePlayer = 100;
+int arrowPlayer = 5;
 
 void main() {
   BonfireInjector.instance.put((i) => VillainGenerator());
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AgsProject',
+      title: 'battleCoins',
       theme: ThemeData(
           colorSchemeSeed: const Color(0xff2a562f), useMaterial3: true),
       home: Game(),

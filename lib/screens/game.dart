@@ -1,12 +1,21 @@
 import 'package:bonfire/bonfire.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:pac/animations/add_arrows_sprite_sheet.dart';
+import 'package:pac/characters/master_a.dart';
 import 'package:pac/characters/playerHero.dart';
 import 'package:pac/characters/villain.dart';
 import 'package:pac/controllers/game_controller.dart';
 import 'package:pac/interface/player_interface.dart';
-import 'package:pac/items/moeda.dart';
+import 'package:pac/items/add_arrows.dart';
+import '../items/coins.dart';
 import '../items/life.dart';
 import '../main.dart';
+
+final audioBackground = AudioPlayer();
+String mapStage = '';
+double zoomConfigure = 1;
 
 class Game extends StatefulWidget {
   final int stage;
@@ -16,68 +25,114 @@ class Game extends StatefulWidget {
   State<Game> createState() => _GameState();
 }
 
-class _GameState extends State<Game> {
+class _GameState extends State<Game> with WidgetsBindingObserver {
+
+  List<GameComponent> enimies = [];
+
+  @override
+  void initState() {
+    switch( widget.stage ){
+
+      case 1:
+        mapStage = 'map/stage_a.json';
+      break;
+
+      case 2:
+        mapStage = 'map/stage_a_master.json';
+      break;
+
+      case 3:
+        mapStage = 'map/stage_b_.json';
+        break;
+
+    }
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    audioBackground.stop();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print('state = $state');
+  }
+
   @override
   Widget build(BuildContext context) {
+    _audioBackground();
     return BonfireTiledWidget(
+
       overlayBuilderMap: {
         PlayerInterface.overlayKey:((context, game) => PlayerInterface(game: game)),
       },
       initialActiveOverlays: const [
         PlayerInterface.overlayKey,
       ],
-      background: BackgroundColorGame(Colors.green),
+      background: BackgroundColorGame(Color(0xff639BFF)),
       joystick: Joystick(
           keyboardConfig: KeyboardConfig(
             keyboardDirectionalType: KeyboardDirectionalType.wasdAndArrows,
           ),
           directional: JoystickDirectional(
-            //color: Colors.black,
-            size: 70, // directional control size
+            spriteKnobDirectional: Sprite.load('joystick/joystick_knob.png'),
+            spriteBackgroundDirectional: Sprite.load('joystick/joystick_background.png'),
+            //size: 120, // directional control size
             isFixed: false,
           ),
           actions: [
             JoystickAction(
-              //sprite: Sprite.load('action.png'), // the action image
-              //spriteBackgroundDirection: Sprite.load('action.png'),
+              sprite: Sprite.load('joystick/joystick_atack.png'), // the action image
+              spriteBackgroundDirection: Sprite.load('joystick/joystick_atack.png'),
               actionId: 1,
-              margin: const EdgeInsets.all(60),
+              size: 80,
+              margin: const EdgeInsets.fromLTRB(0, 0, 40, 60),
+
             ),
+            JoystickAction(
+              sprite: Sprite.load('joystick/joystick_atack_range.png'),
+              actionId: 2,
+              size: 70,
+              margin: const EdgeInsets.fromLTRB(0, 0, 130, 60)
+            ),
+
           ]
       ),
-      map: TiledWorldMap('map/forestmap.json',
-        //add moedas
+      map: TiledWorldMap(mapStage,
         objectsBuilder: {
-          'moeda': (properties)=>Moeda(properties.position),
+          'coins': (properties)=>Coins(properties.position),
+          'addArrow': (properties)=>AddArrows(properties.position),
+          'life': (properties)=>Life(properties.position),
+          'enemy': (properties)=>Villain(properties.position),
+          'master_a': (properties)=>MasterA(properties.position),
         },
         forceTileSize: Size(tileSize, tileSize),
       ),
       player: PlayerHero(Vector2(18*tileSize, 14*tileSize)),
       cameraConfig: CameraConfig(
         moveOnlyMapArea: true,
-        zoom: 1,
+        zoom: zoomConfigure,
       ),
       components: [
         MyGameController(widget.stage),
-
-        Life(Vector2(tileSize*8.6, tileSize*20)),
-        Life(Vector2(tileSize*24.6, tileSize*25)),
-        Life(Vector2(tileSize*19.1, tileSize*30)),
-
-        Villain(Vector2(1 * tileSize, 23 * tileSize)),
-        Villain(Vector2(9 * tileSize, 11 * tileSize)),
-        Villain(Vector2(12 * tileSize, 35 * tileSize)),
-        Villain(Vector2(25 * tileSize, 23 * tileSize)),
-        Villain(Vector2(9 * tileSize, 20 * tileSize)),
-        Villain(Vector2(20 * tileSize, 25 * tileSize)),
-        Villain(Vector2(6 * tileSize, 23 * tileSize)),
-        Villain(Vector2(25 * tileSize, 17 * tileSize)),
-        Villain(Vector2(6 * tileSize, 35 * tileSize)),
-        Villain(Vector2(1 * tileSize, 32 * tileSize)),
-
       ],
       //showCollisionArea: true,
     );
   }
+
+  void _audioBackground(){
+    //FlameAudio.bgm.initialize();
+    //FlameAudio.bgm.play('Battleship.ogg');
+    // await audioBackground.setAsset('assets/audio/Battleship.ogg');
+    // await audioBackground.setVolume(0.5);
+    // await audioBackground.setLoopMode(LoopMode.one);
+    // await audioBackground.play();
+  }
+
 }
 

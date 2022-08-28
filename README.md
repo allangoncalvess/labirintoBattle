@@ -6,4 +6,4 @@
 
 <h2>Para testar o projeto, baixo a APK de instalação para Android no link Abaixo<h2>
 
-<a href="https://drive.google.com/file/d/1cxyp8M4mX5KdnYXDQA-GjIihkyIJ5XiY/view?usp=sharing"> APK INSTALAÇÃO ANDROID </a>
+<a href="https://drive.google.com/file/d/1cxyp8M4mX5KdnYXDQA-GjIihkyIJ5XiY/view?usp=sharing">DOWNLOAD APK INSTALAÇÃO ANDROID </a>

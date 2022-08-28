@@ -1,7 +1,13 @@
 import 'package:bonfire/bonfire.dart';
 
+// double xIdLeft;
+// double xLeft;
+
 class HeroSpriteSheet{
-  Future<SpriteAnimation> get heroIdleLeft => SpriteAnimation.load('hero.png',
+
+  String asset_url = 'player/hero.png';
+
+  Future<SpriteAnimation> get heroIdleLeft => SpriteAnimation.load(asset_url,
       SpriteAnimationData.sequenced(
         amount: 2,
         stepTime: 0.50,
@@ -10,7 +16,7 @@ class HeroSpriteSheet{
       ),
   );
 
-  Future<SpriteAnimation> get heroRunLeft => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroRunLeft => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.10,
@@ -19,7 +25,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroIdleRight => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroIdleRight => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.50,
@@ -28,7 +34,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroRunRight => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroRunRight => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.10,
@@ -37,7 +43,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroIdleUp => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroIdleUp => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.50,
@@ -46,7 +52,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroRunUp => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroRunUp => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.15,
@@ -55,7 +61,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroIdleDown => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroIdleDown => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.50,
@@ -64,7 +70,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroRunDown => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get heroRunDown => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.15,
@@ -73,44 +79,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get heroAttackRight => SpriteAnimation.load('atack_right.png',
-    SpriteAnimationData.sequenced(
-      amount: 3,
-      stepTime: 0.30,
-      textureSize: Vector2(32, 32),
-      texturePosition: Vector2(0, 0),
-    ),
-  );
-
-  Future<SpriteAnimation> get heroAttackLeft => SpriteAnimation.load('atack_left.png',
-    SpriteAnimationData.sequenced(
-      amount: 3,
-      stepTime: 0.30,
-      textureSize: Vector2(32, 32),
-      texturePosition: Vector2(0, 0),
-    ),
-  );
-
-  Future<SpriteAnimation> get heroAttackUp => SpriteAnimation.load('atack_top.png',
-    SpriteAnimationData.sequenced(
-      amount: 3,
-      stepTime: 0.30,
-      textureSize: Vector2(32, 32),
-      texturePosition: Vector2(0, 0),
-    ),
-  );
-
-  Future<SpriteAnimation> get heroAttackDown => SpriteAnimation.load('atack_bottom.png',
-    SpriteAnimationData.sequenced(
-      amount: 3,
-      stepTime: 0.30,
-      textureSize: Vector2(32, 32),
-      texturePosition: Vector2(0, 0),
-    ),
-  );
-
-
-  Future<SpriteAnimation> get receiveDamageRight => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get receiveDamageRight => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.15,
@@ -119,7 +88,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get receiveDamageLeft => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get receiveDamageLeft => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.15,
@@ -128,7 +97,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get receiveDamageDown => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get receiveDamageDown => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.15,
@@ -137,7 +106,7 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get receiveDamageUp => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get receiveDamageUp => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 2,
       stepTime: 0.15,
@@ -146,16 +115,16 @@ class HeroSpriteSheet{
     ),
   );
 
-  Future<SpriteAnimation> get dieRight => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get dieRight => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 3,
-      stepTime: 0.10,
+      stepTime: 0.04,
       textureSize: Vector2(32, 32),
       texturePosition: Vector2(672, 64),
     ),
   );
 
-  Future<SpriteAnimation> get die => SpriteAnimation.load('hero.png',
+  Future<SpriteAnimation> get die => SpriteAnimation.load(asset_url,
     SpriteAnimationData.sequenced(
       amount: 5,
       stepTime: 0.50,

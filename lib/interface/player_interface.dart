@@ -23,10 +23,14 @@ class _PlayerInterfaceState extends State<PlayerInterface> {
 
   late async.Timer _lifeTime;
   late async.Timer _moedas;
+  late async.Timer _enemy;
+  late async.Timer _arrowPlayer;
   @override
   void initState() {
     _lifeTime = async.Timer.periodic(const Duration(milliseconds: 100), _verifyLife);
     _moedas = async.Timer.periodic(const Duration(milliseconds: 100), _verifyMoedas);
+    _enemy = async.Timer.periodic(const Duration(milliseconds: 100), _verifyEnemys);
+    _arrowPlayer = async.Timer.periodic(const Duration(milliseconds: 100), _verifyArrowPlayer);
     super.initState();
   }
 
@@ -40,71 +44,134 @@ class _PlayerInterfaceState extends State<PlayerInterface> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 40, 0, 0),
-      child: Row(
-        children: [
-          //life Player
-          Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            child: Row(
+      child: Container(
+        //color: Colors.black26,
+            child:
+            Column(
               children: [
-                Container(
-                  child: Image.asset('./assets/images/ihero.png'),
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                Container(
-                  width: 100,
-                  height: 15,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2, style: BorderStyle.solid)
-                  ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
-                         //margin: const EdgeInsets.all(20),
-                         width: widthCurrent,
-                         height: 10,
-                         color: Colors.green,
-                        ),
-                      ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Image.asset('./assets/images/interface/ihero.png'),
+                          ),
+                          Container(
+                            width: 100,
+                            height: 15,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white, width: 2, style: BorderStyle.solid)
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 500),
+                                  //margin: const EdgeInsets.all(20),
+                                  width: widthCurrent,
+                                  height: 10,
+                                  color: Colors.green,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    //coins
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                              // color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Image.asset('./assets/images/interface/coin.png'),
+                          ),
+                          Container(
+                            width: 50,
+                            height: 20,
+                            child: Text(' $coins', style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none,
+                            ),),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //enemys
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              // color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Image.asset('./assets/images/interface/ivillain.png'),
+                          ),
+                          Container(
+                            width: 50,
+                            height: 20,
+                            child: Text('$enemy', style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none,
+                            ),),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          //moedas
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-            child: Row(
-              children: [
-                Container(
-                  child: Image.asset('./assets/images/points.png'),
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                   // color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                //arrows
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          // color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Image.asset('./assets/images/attack/range_up.png'),
+                      ),
+                      SizedBox(
+                        width: 50,
+                        height: 20,
+                        child: Text('$arrowPlayer', style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none,
+                        ),),
+                      ),
+                    ],
                   ),
                 ),
-               Container(
-                 child: Text(' $moedas', style: TextStyle(
-                   color: Colors.white,
-                   fontSize: 20,
-                   fontWeight: FontWeight.bold,
-                 ),),
-                    //margin: const EdgeInsets.all(20),
-                    width: 50,
-                    height: 20,
-                  ),
+
               ],
             ),
-          ),
-        ],
       ),
     );
   }
@@ -122,7 +189,20 @@ class _PlayerInterfaceState extends State<PlayerInterface> {
 
   void _verifyMoedas(async.Timer timer) {
     setState(() {
-      moedas;
+      coins;
+    });
+  }
+
+  void _verifyEnemys(async.Timer timer) {
+    setState(() {
+      enemy;
+    });
+  }
+
+
+  void _verifyArrowPlayer(async.Timer timer) {
+    setState(() {
+      arrowPlayer;
     });
   }
 }

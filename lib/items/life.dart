@@ -1,69 +1,38 @@
 import 'package:bonfire/bonfire.dart';
-import 'package:pac/main.dart';
-import '../characters/playerHero.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:pac/animations/life_sprite_sheet.dart';
+import '../main.dart';
 
-class Life extends SimpleEnemy with ObjectCollision{
+final audioLife = AudioPlayer();
+late final BonfireGame game;
+
+class Life extends GameDecoration with Sensor{
+
   Life(Vector2 position)
-      : super(
-      position: position, //required
-      size: Vector2(32.0, 32.0), //required
-      life: 500,
-      speed: 20,
-      initDirection: Direction.down,
-      animation: SimpleDirectionAnimation(
-        idleLeft: image,
-        idleRight: image, //required
-        runLeft: image,
-        runRight: image,
-      )
+      :super.withAnimation(
+    animation: LifeSpriteSheet().image,
+    position: position,
+    size: Vector2(20, 20),
   ){
-    setupCollision(
-      CollisionConfig(
-        enable: true,
-        collisions: [ //required
+    setupSensorArea(
+        areaSensor: [
           CollisionArea.rectangle(
-            size: Vector2(16,16),
-            align: Vector2(10,10),
+            size: Vector2(16, 16),
           ),
-        ],
-      ),
+        ]
     );
   }
 
   @override
-  void update(double dt) {
-    this.seeComponentType<PlayerHero>(
-        observed: (player) {
-          removeFromParent();
-          lifePlayer = 100;
-
-    },
-      radiusVision: tileSize,
-    );
-    super.update(dt);
-  }
-
-  @override
-  bool onCollision(GameComponent component, bool active) {
-    if (component.toString() == "Instance of 'Villain'" ){
-
-    } else if (component.toString() == "Instance of 'PlayerHero'") {
+  void onContact(GameComponent component) {
+    if(component.toString() == "Instance of 'PlayerHero'" ){
+      removeFromParent();
+      _audioLife();
     }
-    return super.onCollision(component, active);
   }
-
-  @override
-  void die() {
-    super.die();
-  }
-
 }
 
-Future<SpriteAnimation> get image => SpriteAnimation.load('diversos.png',
-  SpriteAnimationData.sequenced(
-    amount: 1,
-    stepTime: 0.50,
-    textureSize: Vector2(16, 16),
-    texturePosition: Vector2(20*tileSize, 14*tileSize),
-  ),
-);
+Future<void> _audioLife () async {
+  await audioLife.setAsset('assets/audio/life.wav');
+  await audioLife.play();
+}

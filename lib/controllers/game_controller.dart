@@ -1,21 +1,26 @@
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:pac/main.dart';
 import '../screens/game.dart';
 
 class MyGameController extends GameComponent {
   bool endGame = false;
   bool gameOver = false;
+  final audioGameOver = AudioPlayer();
+  final audioWinner = AudioPlayer();
 
   final stage;
   MyGameController(this.stage);
 
   @override
   void update(double dt) {
+    enemy = gameRef.enemies().length;
     // check Game victory
     if (checkInterval('end game', 500, dt)) {
-      if (moedas == 970 && !endGame) {
+      if (gameRef.enemies().isEmpty && !endGame) {
         endGame = true;
+        _audioWinner();
         showDialog(
             barrierDismissible: false,
             context: context,
@@ -49,11 +54,11 @@ class MyGameController extends GameComponent {
                         children: [
                           ElevatedButton(
                               onPressed: () {
-                                _goStage(stage);
-                                moedas = 0;
-                                endGame = false;
+                                _goStage(stage + 1);
+                                coins = 0;
+                                //endGame = false;
                               },
-                              child: const Text('Jogar novamente')),
+                              child: const Text('Continuar')),
                         ],
                       ),
                     ],
@@ -64,6 +69,7 @@ class MyGameController extends GameComponent {
       }
 
       if (gameRef.player?.isDead == true && !gameOver) {
+        _audioGameOver();
         gameOver = true;
         showDialog(
             barrierDismissible: false,
@@ -99,7 +105,8 @@ class MyGameController extends GameComponent {
                           ElevatedButton(
                               onPressed: () {
                                 _goStage(stage);
-                                moedas = 0;
+                                coins = 0;
+                                enemy = 2;
                               },
                               child: const Text('Tentar novamente')),
                         ],
@@ -124,4 +131,15 @@ class MyGameController extends GameComponent {
       return Game(stage: newStage);
     }), (route) => false);
   }
+
+  Future<void> _audioGameOver() async {
+    await audioGameOver.setAsset('assets/audio/gameover.wav');
+    await audioGameOver.play();
+  }
+
+  Future<void> _audioWinner() async {
+    await audioWinner.setAsset('assets/audio/winner.wav');
+    await audioWinner.play();
+  }
+
 }

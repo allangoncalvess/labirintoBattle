@@ -1,26 +1,30 @@
 import 'package:bonfire/bonfire.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pac/animations/atack_sprite_sheet.dart';
 import 'package:pac/main.dart';
-
 import '../animations/hero_sprite_sheet.dart';
+import 'package:just_audio/just_audio.dart';
 
 class PlayerHero extends SimplePlayer with ObjectCollision, Sensor {
   bool canMove = true;
+  final audioAtack = AudioPlayer();
+  String asset = 'player/hero.png';
 
   PlayerHero(Vector2 position)
       : super(
-            position: Vector2(tileSize * 11, tileSize * 30),
+            position: Vector2(tileSize * 52, tileSize * 40.6),
             //required
-            size: Vector2(64, 64),
-            life: lifePlayer,
+            size: Vector2(48, 48),
+            life: 100,
             initDirection: Direction.down,
             speed: 70,
             animation: SimpleDirectionAnimation(
               idleRight: HeroSpriteSheet().heroIdleRight,
               runRight: HeroSpriteSheet().heroRunRight,
+
               runUp: HeroSpriteSheet().heroRunUp,
               idleUp: HeroSpriteSheet().heroIdleUp,
+
               runDown: HeroSpriteSheet().heroRunDown,
               idleDown: HeroSpriteSheet().heroIdleDown,
             )) {
@@ -30,35 +34,12 @@ class PlayerHero extends SimplePlayer with ObjectCollision, Sensor {
         collisions: [
           //required
           CollisionArea.rectangle(
-            size: Vector2(24, 24),
-            align: Vector2(19, 19),
+            size: Vector2(24, 26),
+            align: Vector2(12, 10),
           ),
         ],
       ),
     );
-
-    setupSensorArea(areaSensor: [
-      CollisionArea.rectangle(
-        size: Vector2(24, 24),
-        align: Vector2(19, 19),
-      ),
-    ]);
-  }
-
-  @override
-  bool onCollision(GameComponent component, bool active) {
-    if (component.toString() == "Instance of 'Life'") {
-      _executeAttack();
-      life = 100;
-    }
-    return super.onCollision(component, active);
-  }
-
-  @override
-  void onContact(GameComponent component) {
-    if (component.toString() == "Instance of 'Moeda'") {
-      //removeFromParent();
-    }
   }
 
   @override
@@ -72,8 +53,7 @@ class PlayerHero extends SimplePlayer with ObjectCollision, Sensor {
 
   @override
   void update(double dt) {
-
-    super.update(dt);
+        super.update(dt);
   }
 
   // @override
@@ -90,8 +70,14 @@ class PlayerHero extends SimplePlayer with ObjectCollision, Sensor {
   void joystickAction(JoystickActionEvent event) {
     if (event.event == ActionEvent.DOWN && event.id == 1 ||
         event.id == LogicalKeyboardKey.space.keyId) {
-      _executeAttack();
+      _animationMaleeAttack();
     }
+
+    if (event.event == ActionEvent.DOWN && event.id == 2 ||
+        event.id == LogicalKeyboardKey.digit0.keyId) {
+      _animationRangeAttack();
+    }
+
     super.joystickAction(event);
   }
 
@@ -102,26 +88,55 @@ class PlayerHero extends SimplePlayer with ObjectCollision, Sensor {
     }
   }
 
-  void _executeAttack() {
-    simpleAttackMelee(
-      damage: 35,
-      sizePush: 16,
-      size: Vector2(32, 24),
-      animationRight: HeroSpriteSheet().heroAttackRight,
-      animationLeft: HeroSpriteSheet().heroAttackLeft,
-      animationUp: HeroSpriteSheet().heroAttackUp,
-      animationDown: HeroSpriteSheet().heroAttackDown,
-      withPush: true,
+  void _executeRangeAttack() {
+    //_audioAtack();
+    arrowPlayer = arrowPlayer - 1;
+    simpleAttackRange(
+      animationRight: AtackSpriteSheet('attack/range_right.png').attackRangeRight,
+      animationLeft: AtackSpriteSheet('attack/range_left.png').attackRangeLeft,
+      animationUp: AtackSpriteSheet('attack/range_up.png').attackRangeUp,
+      animationDown: AtackSpriteSheet('attack/range_down.png').attackRangeDown,
+      damage: 100,
+      speed: 500,
+      size: Vector2(16, 16),
+      collision: CollisionConfig(
+        enable: true,
+        collisions: [
+          //required
+          CollisionArea.rectangle(
+            size: Vector2(10, 10),
+            align: Vector2(0, 0),
+          ),
+        ],
+      ),
     );
+  }
+
+  void _executeMaleeAttack() {
+    //_audioAtack();
+    simpleAttackMelee(
+      animationRight: AtackSpriteSheet('attack/malee_right.png').attackMaleeRight,
+      animationLeft: AtackSpriteSheet('attack/malee_left.png').attackMaleeLeft,
+      animationUp: AtackSpriteSheet('attack/malee_up.png').attackMaleeUp,
+      animationDown: AtackSpriteSheet('attack/malee_down.png').attackMaleeDown,
+      damage: 50,
+      size: Vector2(24, 24),
+      withPush: false,
+      sizePush: 2,
+    );
+  }
+
+  Future<void> _audioAtack () async {
+    await audioAtack.setAsset('assets/audio/atack.mp3');
+    await audioAtack.play();
   }
 
   @override
   void receiveDamage(AttackFromEnum attacker, double damage, identify) {
-    canMove = false;
     if (lastDirection == Direction.left) {
       animation?.playOnce(HeroSpriteSheet().receiveDamageLeft,
           runToTheEnd: true, onFinish: () {
-        canMove = true;
+          canMove = true;
       });
     } else if (lastDirection == Direction.right) {
       animation?.playOnce(HeroSpriteSheet().receiveDamageRight,
@@ -141,55 +156,85 @@ class PlayerHero extends SimplePlayer with ObjectCollision, Sensor {
     }
     super.receiveDamage(attacker, damage, identify);
   }
+
+  void _animationMaleeAttack() {
+    if (lastDirection == Direction.left) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentMaleeLeft,
+          runToTheEnd: true,
+          onFinish: () {
+            _executeMaleeAttack();
+          });
+    } else if (lastDirection == Direction.right) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentMaleeRight,
+          runToTheEnd: true,
+          onFinish: () {
+            _executeMaleeAttack();
+          });
+    } else if (lastDirection == Direction.down) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentMaleeDown,
+          runToTheEnd: true,
+          onFinish: () {
+            _executeMaleeAttack();
+          });
+    } else if (lastDirection == Direction.up) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentMaleeUp,
+          runToTheEnd: true,
+          onFinish: () {
+            _executeMaleeAttack();
+          });
+    }
+  }
+
+  void _animationRangeAttack() {
+    if (lastDirection == Direction.left) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentRangeLeft,
+          runToTheEnd: true,
+          onFinish: () {
+            if(arrowPlayer > 0) {
+              _executeRangeAttack();
+            }
+          });
+    } else if (lastDirection == Direction.right) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentRangeRight,
+          runToTheEnd: true,
+          onFinish: () {
+            if(arrowPlayer > 0) {
+              _executeRangeAttack();
+            }
+          });
+    } else if (lastDirection == Direction.down) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentRangeDown,
+          runToTheEnd: true,
+          onFinish: () {
+            if(arrowPlayer > 0) {
+              _executeRangeAttack();
+            }
+          });
+    } else if (lastDirection == Direction.up) {
+      animation?.playOnce(
+          AtackSpriteSheet(asset).movimentRangeUp,
+          runToTheEnd: true,
+          onFinish: () {
+            if(arrowPlayer > 0) {
+              _executeRangeAttack();
+            }
+          });
+    }
+  }
+
+  @override
+  void onContact(GameComponent component) {
+    if(component.toString() == "Instance of 'Life'" ){
+      life = 100;
+    }
+  }
 }
 
-Future<void> _alertaDialog(BuildContext context) async {
-  showDialog(
-      context: context, builder: (context) => AlertDialog(
-        actions: [
-          // Padding(
-          //   padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       Text(
-          //         'title',
-          //         style: TextStyle(
-          //           fontSize: 18,
-          //           fontWeight: FontWeight.bold,
-          //         ),
-          //       ),
-          //       Text(
-          //         'content',
-          //         textAlign: TextAlign.center,
-          //         overflow: TextOverflow.clip,
-          //         style: TextStyle(
-          //           fontSize: 14,
-          //         ),
-          //       ),
-          //       Row(
-          //         mainAxisAlignment: MainAxisAlignment.center,
-          //         crossAxisAlignment: CrossAxisAlignment.center,
-          //         children: [
-          //           TextButton(
-          //             onPressed: () {
-          //               if (Navigator.canPop(context)) {
-          //                 Navigator.pop(context);
-          //               } else {
-          //                 SystemNavigator.pop();
-          //               }
-          //             },
-          //             child: Text(''),
-          //           ),
-          //         ],
-          //       ),
-          //     ],
-          //   ),
-          // )
-        ],
-        title: Text('aaaaaaaa'),
-        //contentPadding: EdgeInsets.all(20),
-        content: Text('bbbbbbbbbbbbbbb'),
-      ));
-}
+
