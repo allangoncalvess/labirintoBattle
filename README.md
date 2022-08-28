@@ -1,7 +1,8 @@
 ## Flutter - lBattle
   
 <div style="display: inline_block"><br>
-  <img  alt="LabirintoBattle" src="https://user-images.githubusercontent.com/55851020/185760428-4bd22e2c-71eb-46cd-aba3-066c3c4e0ed1.gif">
+  <img  alt="LabirintoBattle" src="https://user-images.githubusercontent.com/55851020/187054713-9138c3be-af20-433d-a1fd-7ed62ad5ee09.gif">
+  <img  alt="LabirintoBattle" src="https://user-images.githubusercontent.com/55851020/187054714-c2326c81-e621-45fb-a6c2-51e646281a96.gif">
 </div>
 
 <h2>Para testar o projeto, baixo a APK de instalação para Android no link Abaixo<h2>
