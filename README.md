@@ -1,4 +1,4 @@
-## Flutter - labirinto battle
+## Flutter - lBattle
   
 <div style="display: inline_block"><br>
   <img  alt="LabirintoBattle" src="https://user-images.githubusercontent.com/55851020/185760428-4bd22e2c-71eb-46cd-aba3-066c3c4e0ed1.gif">
